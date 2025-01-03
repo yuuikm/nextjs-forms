@@ -1,0 +1,49 @@
+import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
+import { FormElementInstance } from "../FormElements";
+import { formDataType } from "../Fields/TextField";
+
+export type DesignerContextType = {
+    elements:FormElementInstance[],
+    setElements:Dispatch<SetStateAction<FormElementInstance[]>>,
+    selectedElement:FormElementInstance|null,
+    addElement:(index:number,element:FormElementInstance)=>void,
+    removeElement:(id:string)=>void,
+    setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>,
+    updateElement:(id:string,element:FormElementInstance)=>void
+}
+
+export const DesignerContext = createContext<DesignerContextType|null>(null)
+
+export default function DesignerContextProvider({children}:{children:ReactNode}){
+    const [elements,setElements] = useState<FormElementInstance[]>([]);
+    const [selectedElement,setSelectedElement] = useState<FormElementInstance|null>(null);
+
+    const addElement = (index:number,element:FormElementInstance)=>{
+        setElements((prev)=>{
+            const newElements = [...prev];
+            newElements.splice(index,0,element)
+            return newElements;
+        });
+    }
+
+    const removeElement = (id:string)=>{
+        setElements((prev)=>prev.filter((e)=>e.id!==id));
+    }
+
+    const updateElement = (id:string,element:FormElementInstance)=>{
+        console.log(element)
+        setElements((prev) => {
+            const newElements = [...prev];
+            const index = newElements.findIndex((el) => el.id === id);
+            newElements[index] = element;
+            console.log(newElements)
+            return newElements;
+          });
+    }
+
+    return (
+        <DesignerContext.Provider value={{setElements,elements,addElement,removeElement,selectedElement,setSelectedElement,updateElement}} >
+            {children}
+        </DesignerContext.Provider>
+    )
+}
