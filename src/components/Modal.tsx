@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as Label from "@radix-ui/react-label";
 import { Button } from "./ui/button";
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -15,9 +16,14 @@ const Modal = ({
 
   const handleCreateForm = async () => {
     try {
+      const resp = await axios.post(`/api/createform`, {
+        name: formName,
+        description: formDesc,
+      });
+      console.log("Form created successfully:", resp.data);
       router.reload();
     } catch (error) {
-      console.log(error);
+      console.error("Error creating form:", error);
     }
   };
 
@@ -28,10 +34,9 @@ const Modal = ({
     >
       <div className="heading flex items-start justify-between w-full p-2">
         <div className="headings">
-          <h1 className="tracking-tight text-xl  font-semibold">Create Form</h1>
+          <h1 className="tracking-tight text-xl font-semibold">Create Form</h1>
           <h3 className="text-lg font-normal text-muted-foreground pt-1">
-            {" "}
-            Create a new form{" "}
+            Create a new form
           </h3>
         </div>
         <Image
@@ -70,7 +75,6 @@ const Modal = ({
           onChange={(e) => setFormDesc(e.target.value)}
           style={{ border: "1px solid #d3d3d3" }}
           className="w-full mt-3 p-2 rounded-lg"
-          name=""
           id="description"
           cols={30}
           rows={5}
