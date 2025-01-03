@@ -1,7 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
 import "../styles/global.css";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@/components/layout";
 import DesignerContextProvider from "@/components/context/DesignerContext";

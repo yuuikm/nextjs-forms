@@ -1,6 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
 import { FormElementInstance } from "../FormElements";
-import { formDataType } from "../Fields/TextField";
 
 export type DesignerContextType = {
     elements:FormElementInstance[],

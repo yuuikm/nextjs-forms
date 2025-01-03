@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import * as Label from "@radix-ui/react-label";
 import { Button } from "./ui/button";
-import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -16,10 +15,6 @@ const Modal = ({
 
   const handleCreateForm = async () => {
     try {
-      const resp = await axios.post(`/api/createform`, {
-        name: formName,
-        description: formDesc,
-      });
       router.reload();
     } catch (error) {
       console.log(error);

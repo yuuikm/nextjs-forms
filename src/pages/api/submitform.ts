@@ -1,13 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { formSchema, formSchemaType } from "../../../schema/form";;
-import { currentUser } from "@clerk/nextjs";
 import prisma from "@/lib/prisma";
-import { getAuth } from '@clerk/nextjs/server';
 
 export type ResponseData={
     status:boolean,
     message:string,
-    data:any
+    data: Record<string, unknown> | null;
 }
 
 export default async function handler(
@@ -41,7 +38,3 @@ export default async function handler(
             break;
     }
   }
-
-// export async function SubmitForm(formUrl: string, content: string) {
-//     return 
-//   }

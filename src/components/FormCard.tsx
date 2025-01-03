@@ -1,11 +1,8 @@
 import React from 'react'
 import { Skeleton } from './ui/skeleton'
-import { useRouter } from 'next/router'
-import { GetServerSideProps } from 'next'
-import Image from 'next/image'
 import { Form } from '@prisma/client'
 import Link from 'next/link'
-import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons'
+import { EyeOpenIcon } from '@radix-ui/react-icons'
 
 
 
@@ -14,7 +11,6 @@ export const FormCardSkeleton = ()=>{
 }
 
 const FormCard = ({formData}:{formData:Form}) => {
-    const router = useRouter();
     const date = new Date(formData.createdAt)
 
   return (

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import PreviewDialogBtn from "./PreviewDialogBtn";
 import SaveBtn from "./SaveBtn";
 import PublishBtn from "./PublishBtn";
-import { DndContext, MouseSensor, TouchSensor, useDraggable, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import Designer from "./Designer";
 import DragOverlayWrapper from "./DragOverlayWrapper";
 import { useRouter } from 'next/router'

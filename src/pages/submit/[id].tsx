@@ -1,89 +1,73 @@
-
 import { FormElementInstance } from "@/components/FormElements";
 import FormSubmitComponent from "@/components/FormSubmit";
 import prisma from "@/lib/prisma";
-import { Form,FormSubmissions } from "@prisma/client";
+import { Form } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
+import { GetServerSidePropsContext } from "next";
 
-export async function getServerSideProps(context: any) {
-    const id = context.query.id;
-    console.log(id)
-    try {
-        const form = await prisma.form.findUnique({
-            where: {
-              shareURL: id,
-            },
-          })
-          console.log(form,19)
-          if(form){
-            return {
-                props:{
-                    form:JSON.parse(JSON.stringify(form))
-                }
-            }
-          }else{
-            return {
-                props:{
-                    form:{}
-                }
-            }
-          }
-    } catch (error) {
-        console.log(error)
-        return {
-            props:{
-                form:{}
-            }
-        }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const id = context.query.id as string;
+
+  try {
+    const form = await prisma.form.findUnique({
+      where: {
+        shareURL: id,
+      },
+    });
+
+    if (form) {
+      return {
+        props: {
+          form: JSON.parse(JSON.stringify(form)),
+        },
+      };
+    } else {
+      return {
+        props: {
+          form: {},
+        },
+      };
     }
-    
-
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        form: {},
+      },
+    };
   }
+}
 
-export default function SubmitPage({
-  form
-}: {
-  form:Form;
-}) {
-    const router = useRouter();
+export default function SubmitPage({ form }: { form: Form }) {
+  const router = useRouter();
+  const { isSignedIn, user } = useUser();
 
-    const { isSignedIn, user, isLoaded } = useUser();
-
-    useEffect(() => {
-      const formVisited = async()=>{
-        try {
-          const resp = await axios.patch(`/api/visited?formid=${form.id}`)
-          console.log(resp)
-          return resp;
-        } catch (error) {
-          console.log(error)
-          throw new Error("Something Went Wrong")
-        }
-        
+  useEffect(() => {
+    const formVisited = async () => {
+      try {
+        const resp = await axios.patch(`/api/visited?formid=${form.id}`);
+        console.log(resp);
+        return resp;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Something Went Wrong");
       }
-      console.log(isSignedIn,user)
-      if(!isSignedIn){
-        formVisited();
-      }else{
-        console.log("Asd")
-      }
-      
-    }, [])
- 
+    };
 
-//   if (!form) {
-//     throw new Error("form not found");
-//   }
-  console.log(form)
+    if (!isSignedIn) {
+      formVisited();
+    }
+  }, [form.id, isSignedIn, user]);
+
   const formContent = JSON.parse(form?.content) as FormElementInstance[];
 
-  return(
-  <>
-    <FormSubmitComponent formUrl={router.query.id} content={formContent} />;
-  </>
-)}
-
-
+  return (
+    <FormSubmitComponent
+      formUrl={router.query.id as string}
+      content={formContent}
+    />
+  );
+}

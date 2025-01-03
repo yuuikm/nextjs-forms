@@ -24,14 +24,6 @@ import { toast } from "react-toastify";
 
 const type: ElementsType = "SelectField";
 
-const extraAttributes = {
-  label: "Select field",
-  helperText: "Helper text",
-  required: false,
-  option: [],
-  placeHolder: "Value here...",
-};
-
 export const SelectFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
@@ -52,11 +44,11 @@ export const SelectFieldFormElement: FormElement = {
   ): boolean => {
     const element = formElement as CustomInstance;
     if (element.extraAttributes.required) {
-      return currentValue.length > 0;
+      return currentValue.trim().length > 0;
     }
-
     return true;
   },
+
   designerBtnElement: {
     icon: "/Selectfield.svg",
     label: "SelectField",
@@ -67,10 +59,16 @@ export const SelectFieldFormElement: FormElement = {
 };
 
 type CustomInstance = FormElementInstance & {
-  extraAttributes: typeof extraAttributes;
+  extraAttributes: {
+    label: string;
+    helperText: string;
+    required: boolean;
+    option: string[];
+    placeholder: string;
+  };
 };
 
-export type formDataType = {
+type FormDataType = {
   label: string;
   placeholder: string;
   helperText: string;
@@ -87,13 +85,20 @@ function DesignerComponent({
   return (
     <div className="flex text-slate-800 flex-col gap-2 w-full">
       <Label>
-        {element.extraAttributes?.label}
+        {element.extraAttributes.label}
         {element.extraAttributes.required && "*"}
       </Label>
       <Select>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={element.extraAttributes.placeHolder} />
+          <SelectValue placeholder={element.extraAttributes.placeholder} />
         </SelectTrigger>
+        <SelectContent>
+          {element.extraAttributes.option.map((option, idx) => (
+            <SelectItem key={idx} value={option}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
       {element.extraAttributes.helperText && (
         <p className="text-muted-foreground text-[0.8rem]">
@@ -121,11 +126,12 @@ function FormComponent({
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setError(isInvalid === true);
+    setError(!!isInvalid);
   }, [isInvalid]);
 
-  const { label, required, placeHolder, helperText, option } =
+  const { label, required, placeholder, helperText, option } =
     element.extraAttributes;
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <Label className={cn(error && "text-red-500")}>
@@ -134,21 +140,21 @@ function FormComponent({
       </Label>
       <Select
         defaultValue={value}
-        onValueChange={(value) => {
-          setValue(value);
+        onValueChange={(val) => {
+          setValue(val);
           if (!submitValue) return;
-          const valid = SelectFieldFormElement.validate(element, value);
+          const valid = SelectFieldFormElement.validate(element, val);
           setError(!valid);
-          submitValue(element.id, value);
+          submitValue(element.id, val);
         }}
       >
         <SelectTrigger className={cn("w-full", error && "border-red-500")}>
-          <SelectValue placeholder={placeHolder} />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {option.map((op: string) => (
-            <SelectItem key={op} value={op}>
-              {op}
+          {option.map((opt, idx) => (
+            <SelectItem key={idx} value={opt}>
+              {opt}
             </SelectItem>
           ))}
         </SelectContent>
@@ -173,44 +179,41 @@ function PropertiesComponent({
   elementInstance: FormElementInstance;
 }) {
   const element = elementInstance as CustomInstance;
-
   const { updateElement } = useDesigner();
-  console.log(element.extraAttributes.option);
+
   const [options, setOptions] = useState<string[]>([
     ...element.extraAttributes.option,
   ]);
 
-  const [formData, setFormData] = useState<formDataType>({
+  const [formData, setFormData] = useState<FormDataType>({
     label: element.extraAttributes.label,
-    placeholder: element.extraAttributes.placeHolder,
+    placeholder: element.extraAttributes.placeholder,
     helperText: element.extraAttributes.helperText,
     option: element.extraAttributes.option,
     required: element.extraAttributes.required,
   });
 
-  const handleChange = (e: any) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleOptionInputChange = (e: any, index: number) => {
-    setOptions((prev) => {
-      let arr = [...prev];
-      arr[index] = e.target.value;
-      console.log(arr);
-      return arr;
-    });
+  const handleOptionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const updatedOptions = [...options];
+    updatedOptions[index] = e.target.value;
+    setOptions(updatedOptions);
   };
 
-  const applyChanges = (e: any) => {
+  const applyChanges = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
     updateElement(element.id, {
       ...element,
       extraAttributes: { ...formData, option: options },
     });
-    toast.success("Form Values Updated Save it Now!!");
+    toast.success("Form Values Updated. Save it now!");
   };
 
   return (
@@ -221,14 +224,8 @@ function PropertiesComponent({
           name="label"
           value={formData.label}
           onChange={handleChange}
-          placeholder={element.extraAttributes.label}
+          placeholder="Field Label"
         />
-        <p
-          id=":r18:-form-item-description"
-          className="text-[0.8rem] my-2 text-muted-foreground"
-        >
-          The label of the field. <br /> It will be displayed above the field
-        </p>
       </div>
       <div>
         <Label>Placeholder</Label>
@@ -236,15 +233,8 @@ function PropertiesComponent({
           name="placeholder"
           value={formData.placeholder}
           onChange={handleChange}
-          placeholder={element.extraAttributes.label}
+          placeholder="Field Placeholder"
         />
-        <p
-          id=":r18:-form-item-description"
-          className="text-[0.8rem] my-2 text-muted-foreground"
-        >
-          The Placeholder of the field. <br /> It will be displayed above the
-          field
-        </p>
       </div>
       <div>
         <Label>Helper Text</Label>
@@ -252,61 +242,37 @@ function PropertiesComponent({
           name="helperText"
           value={formData.helperText}
           onChange={handleChange}
-          placeholder={element.extraAttributes.label}
+          placeholder="Helper Text"
         />
-        <p
-          id=":r18:-form-item-description"
-          className="text-[0.8rem] my-2 text-muted-foreground"
-        >
-          The Helper Text of the field. <br /> It will be displayed above the
-          field
-        </p>
       </div>
       <Separator />
-      <div className="flex flex-col items-center w-full gap-4">
-        <div className="flex justify-between w-full">
-          <Label>Options</Label>
-          <Button
-            variant={"outline"}
-            className="gap-2"
-            onClick={(e) => {
-              e.preventDefault();
-              setOptions((prev) => [...prev, "new option"]);
-            }}
-          >
-            <AiOutlinePlus />
-            Add
-          </Button>
-        </div>
-
-        {options.map((el, i) => (
+      <div className="flex flex-col gap-4">
+        <Label>Options</Label>
+        {options.map((option, idx) => (
           <Input
-            key={i}
-            value={el}
-            onChange={(e) => handleOptionInputChange(e, i)}
+            key={idx}
+            value={option}
+            onChange={(e) => handleOptionInputChange(e, idx)}
           />
         ))}
+        <Button
+          variant="outline"
+          onClick={(e) => {
+            e.preventDefault();
+            setOptions([...options, "New Option"]);
+          }}
+        >
+          <AiOutlinePlus /> Add Option
+        </Button>
       </div>
       <div>
-        <div className="flex items-center gap-4">
-          <Label>Mark Required</Label>
-          <Switch
-            checked={formData.required}
-            name="required"
-            onCheckedChange={(e) => {
-              console.log(e);
-              setFormData((prev) => ({ ...prev, ["required"]: e }));
-            }}
-          />
-        </div>
-
-        <p
-          id=":r18:-form-item-description"
-          className="text-[0.8rem] my-2 text-muted-foreground"
-        >
-          Field Will be Marked Required
-          <br /> * will be displayed beside the field
-        </p>
+        <Switch
+          checked={formData.required}
+          onCheckedChange={(checked) =>
+            setFormData((prev) => ({ ...prev, required: checked }))
+          }
+        />
+        <Label>Required</Label>
       </div>
       <Button type="submit" className="bg-indigo-400 hover:bg-indigo-500">
         Update

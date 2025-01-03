@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import axios from "axios";
 import { MdOutlinePublish } from "react-icons/md";
@@ -18,26 +18,23 @@ import { Button } from "./ui/button";
 import { toast } from "./ui/use-toast";
 import useDesigner from "./hooks/useDesigner";
 
-
 function PublishFormBtn({ id }: { id: number }) {
-  const {elements} = useDesigner();
+  const { elements } = useDesigner();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function publishForm() {
     setLoading(true);
     try {
-      const resp = await axios.patch(`/api/publishform?formid=${id}`,{
-        content:elements
-      })
-      if(resp.status===200){
-        console.log("Asd")
-
-       router.replace(window.location.href)
-        
-      setLoading(false);
+      const resp = await axios.patch(`/api/publishform?formid=${id}`, {
+        content: elements,
+      });
+      if (resp.status === 200) {
+        console.log("Form published successfully");
+        router.replace(window.location.href);
+        setLoading(false);
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -58,10 +55,12 @@ function PublishFormBtn({ id }: { id: number }) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. After publishing, you will not be able to edit this form. <br />
+            This action cannot be undone. After publishing, you will not be able
+            to edit this form. <br />
             <br />
             <span className="font-medium">
-              By publishing this form, you will make it available to the public and be able to collect submissions.
+              By publishing this form, you will make it available to the public
+              and be able to collect submissions.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>

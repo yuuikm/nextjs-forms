@@ -1,10 +1,8 @@
 import React from "react";
 import { FormCardData } from "@/data";
-import Image from "next/image";
 
 const FormCard = ({
   title,
-  Icon,
   subHeading,
   value,
   visits,

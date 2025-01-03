@@ -2,11 +2,17 @@ import React, { useCallback, useRef, useState, useTransition } from "react";
 import { FormElementInstance, FormElements } from "./FormElements";
 import { Button } from "./ui/button";
 import { HiCursorClick } from "react-icons/hi";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 import { ImSpinner2 } from "react-icons/im";
 import axios from "axios";
 
-function FormSubmitComponent({ formUrl, content }: { content: FormElementInstance[]; formUrl: string|string[]|undefined }) {
+function FormSubmitComponent({
+  formUrl,
+  content,
+}: {
+  content: FormElementInstance[];
+  formUrl: string | string[] | undefined;
+}) {
   const formValues = useRef<{ [key: string]: string }>({});
   const formErrors = useRef<{ [key: string]: boolean }>({});
   const [renderKey, setRenderKey] = useState(new Date().getTime());
@@ -24,11 +30,7 @@ function FormSubmitComponent({ formUrl, content }: { content: FormElementInstanc
       }
     }
 
-    if (Object.keys(formErrors.current).length > 0) {
-      return false;
-    }
-
-    return true;
+    return Object.keys(formErrors.current).length === 0;
   }, [content]);
 
   const submitValue = useCallback((key: string, value: string) => {
@@ -40,23 +42,22 @@ function FormSubmitComponent({ formUrl, content }: { content: FormElementInstanc
     const validForm = validateForm();
     if (!validForm) {
       setRenderKey(new Date().getTime());
-      toast.error("please check the form for errors");
+      toast.error("Please check the form for errors");
       return;
     }
 
     try {
       const jsonContent = JSON.stringify(formValues.current);
-      const resp = await axios.patch(`/api/submitform`,{
-        content:jsonContent,
-        shareURL:formUrl
-      })
-      if(resp.status===200){
-        toast.success("form submitted successfully")
+      const resp = await axios.patch(`/api/submitform`, {
+        content: jsonContent,
+        shareURL: formUrl,
+      });
+      if (resp.status === 200) {
+        toast.success("Form submitted successfully");
         setSubmitted(true);
       }
-      
-    } catch (error) {
-      toast("Something Went Wrong");
+    } catch {
+      toast.error("Something went wrong");
     }
   };
 
@@ -65,21 +66,21 @@ function FormSubmitComponent({ formUrl, content }: { content: FormElementInstanc
       <div className="flex justify-center w-full h-full items-center p-8">
         <div className="max-w-[620px] flex flex-col gap-4 flex-grow bg-background w-full p-8 overflow-y-auto border shadow-xl shadow-blue-700 rounded">
           <h1 className="text-2xl font-bold">Form submitted</h1>
-          <p className="text-muted-foreground">Thank you for submitting the form, you can close this page now.</p>
+          <p className="text-muted-foreground">
+            Thank you for submitting the form. You can close this page now.
+          </p>
         </div>
       </div>
     );
   }
-  console.log(content)
+
   return (
     <div className="flex justify-center w-full h-full items-center p-8">
       <div
         key={renderKey}
         className="max-w-[620px] flex flex-col gap-4 flex-grow bg-background w-full p-8 overflow-y-auto border shadow-xl shadow-blue-700 rounded"
       >
-       
         {content.map((element) => {
-            console.log(element)
           const FormElement = FormElements[element.type].formComponent;
           return (
             <FormElement

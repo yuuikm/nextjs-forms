@@ -1,33 +1,49 @@
 import StatCard from "@/components/StatCard";
 import React, { Suspense, useState } from "react";
 import { CardData } from "@/data";
-import Image from "next/image";
 import Modal from "@/components/Modal";
 import prisma from "@/lib/prisma";
 import { getAuth } from "@clerk/nextjs/server";
 import { FormCardSkeleton } from "@/components/FormCard";
 import FetchForms from "@/components/FetchForms";
+import { GetServerSidePropsContext } from "next";
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = getAuth(context.req);
-  console.log(user);
-  const res = await prisma.$connect();
-  console.log(res);
-  const forms = await prisma.form.findMany({
-    where: {
-      userId: user?.userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  console.log(forms, 27);
-  return {
-    props: {
-      forms: JSON.parse(JSON.stringify(forms)),
-      userId: user.userId,
-    },
-  };
+  if (!user.userId) {
+    return {
+      props: {
+        forms: [],
+        userId: null,
+      },
+    };
+  }
+
+  try {
+    const forms = await prisma.form.findMany({
+      where: {
+        userId: user.userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return {
+      props: {
+        forms: JSON.parse(JSON.stringify(forms)),
+        userId: user.userId,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        forms: [],
+        userId: user.userId,
+      },
+    };
+  }
 }
 
 const Forms = ({
@@ -46,12 +62,12 @@ const Forms = ({
     submissions: number;
     shareURL: string;
   }[];
-  userId: string;
+  userId: string | null;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  console.log(forms);
   const totalVisits = forms.reduce((sum, form) => sum + form.visits, 0);
   const totalValue = forms.reduce((sum, form) => sum + form.submissions, 0);
+
   return (
     <div className={` relative flex justify-center `}>
       {open && <Modal setOpen={setOpen} />}
@@ -97,13 +113,19 @@ const Forms = ({
               Create new form
             </p>
           </button>
-          <Suspense
-            fallback={[1, 2, 3, 4].map((e) => (
-              <FormCardSkeleton key={e} />
-            ))}
-          >
-            <FetchForms userId={userId} />
-          </Suspense>
+          {userId ? (
+            <Suspense
+              fallback={[1, 2, 3, 4].map((e) => (
+                <FormCardSkeleton key={e} />
+              ))}
+            >
+              <FetchForms userId={userId} />
+            </Suspense>
+          ) : (
+            <p className="text-center col-span-3">
+              You must be logged in to view your forms.
+            </p>
+          )}
         </div>
       </div>
     </div>
