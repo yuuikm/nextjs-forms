@@ -64,18 +64,12 @@ const FormCard = ({ formData }: { formData: Form }) => {
       <div className="description text-gray-400 font-medium">
         {formData.description}
       </div>
-      <div
-        className={`flex ${
-          formData.published ? "justify-center w-full" : "justify-between"
-        } items-center mt-auto`}
-      >
+      <div className={"flex items-center mt-auto justify-between gap-2"}>
         {formData.published && (
           <Link
             href={`/formdetails/${formData.id}`}
             type="button"
-            className={`${
-              formData.published ? "w-3/4 mr-4" : ""
-            } flex rounded-md gap-2 bg-indigo-500 hover:bg-indigo-600 p-2 text-white font-medium text-lg justify-center items-center`}
+            className="flex w-11/12 rounded-md gap-2 bg-indigo-500 hover:bg-indigo-600 p-2 text-white font-medium text-lg justify-center items-center"
           >
             View Submission
           </Link>
@@ -85,16 +79,17 @@ const FormCard = ({ formData }: { formData: Form }) => {
           <Link
             href={`/form/${formData.id}`}
             type="button"
-            className="flex w-3/4 rounded-md gap-2 bg-indigo-500 hover:bg-indigo-600 p-2 text-white font-medium text-lg justify-center items-center mr-4"
+            className="flex w-11/12 rounded-md gap-2 bg-indigo-500 hover:bg-indigo-600 p-2 text-white font-medium text-lg justify-center items-center"
           >
             Edit Form
           </Link>
         )}
+
         <Button
           onClick={() => handleDeleteForm(formData.id)}
-          className="flex w-1/4 rounded-md bg-red-500 hover:bg-red-600 text-white justify-center items-center h-max"
+          className="flex rounded-md bg-red-500 hover:bg-red-600 p-2 text-white font-medium text-lg justify-center items-center h-full"
         >
-          <ImBin className="h-7 w-7" />
+          Delete
         </Button>
       </div>
     </div>
