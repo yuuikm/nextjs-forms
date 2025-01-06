@@ -129,7 +129,7 @@ const FormBuilder = ({ form }: { form: Form }) => {
             )}
           </div>
         </nav>
-        <div className="flex w-full flex-grow items-center justify-center relative overflow-y-auto h-[85vh] bg-accent bg-indigo-400">
+        <div className="flex w-full flex-grow items-center justify-center relative overflow-y-auto h-[85vh] bg-accent bg-indigo-500">
           <Designer />
         </div>
       </main>

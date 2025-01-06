@@ -20,7 +20,7 @@ function FormLinkShare({ shareUrl }: { shareUrl: string }) {
     <div className="flex flex-grow gap-4 items-center">
       <Input value={shareLink} readOnly />
       <Button
-        className="w-[250px] bg-indigo-400 hover:bg-indigo-500"
+        className="w-[250px] bg-indigo-500 hover:bg-indigo-600"
         onClick={() => {
           navigator.clipboard.writeText(shareLink);
           toast.success("Link Copied to clipboard succesfully");

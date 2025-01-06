@@ -222,7 +222,7 @@ function PropertiesComponent({
           }
         />
       </div>
-      <Button type="submit" className="bg-indigo-400 hover:bg-indigo-500">
+      <Button type="submit" className="bg-indigo-500 hover:bg-indigo-600">
         Update
       </Button>
     </form>

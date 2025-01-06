@@ -83,7 +83,7 @@ const Modal = ({
       <div className="w-full p-6 justify-center flex">
         <Button
           onClick={handleCreateForm}
-          className="w-1/2 bg-indigo-400 hover:bg-indigo-500 text-white text-2xl"
+          className="w-1/2 bg-indigo-500 hover:bg-indigo-600 text-white text-2xl"
         >
           SAVE
         </Button>
