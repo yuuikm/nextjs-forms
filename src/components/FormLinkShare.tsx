@@ -12,7 +12,7 @@ function FormLinkShare({ shareUrl }: { shareUrl: string }) {
   }, []);
 
   if (!mounted) {
-    return null; // avoiding window not defined error
+    return null;
   }
 
   const shareLink = `${window.location.origin}/submit/${shareUrl}`;
