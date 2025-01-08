@@ -7,7 +7,6 @@ import axios from "axios";
 import router from "next/router";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
-import { ImBin } from "react-icons/im";
 
 export const FormCardSkeleton = () => {
   return <Skeleton className="border-2 border-primary-/20 h-[190px] w-full" />;
