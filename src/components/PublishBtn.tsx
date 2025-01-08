@@ -46,7 +46,7 @@ function PublishFormBtn({ id }: { id: number }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="gap-2 text-white bg-indigo-400">
+        <Button className="gap-2 text-white bg-indigo-500">
           <MdOutlinePublish className="h-4 w-4" />
           Publish
         </Button>
@@ -72,7 +72,7 @@ function PublishFormBtn({ id }: { id: number }) {
               e.preventDefault();
               publishForm();
             }}
-            className="bg-indigo-400 hover:bg-indigo-500"
+            className="bg-indigo-500 hover:bg-indigo-600"
           >
             Proceed {loading && <FaSpinner className="animate-spin" />}
           </AlertDialogAction>

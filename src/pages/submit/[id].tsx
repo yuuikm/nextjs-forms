@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect } from "react";
 import { GetServerSidePropsContext } from "next";
+import { cn } from "@/lib/utils";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const id = context.query.id as string;
@@ -65,9 +66,29 @@ export default function SubmitPage({ form }: { form: Form }) {
   const formContent = JSON.parse(form?.content) as FormElementInstance[];
 
   return (
-    <FormSubmitComponent
-      formUrl={router.query.id as string}
-      content={formContent}
-    />
+    <main className={cn("flex flex-col items-center")}>
+      <div
+        className={cn(
+          "area relative flex flex-col items-center justify-center h-screen"
+        )}
+      >
+        <FormSubmitComponent
+          formUrl={router.query.id as string}
+          content={formContent}
+        />
+         <ul className="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </main>
   );
 }

@@ -23,7 +23,7 @@ const Navbar = () => {
         <Link
           href="/forms"
           className={cn(
-            "text-white bg-indigo-400",
+            "text-white bg-indigo-500 hover:bg-indigo-600",
             "hover:bg-gradient-to-l focus:ring-4 focus:outline-none",
             "font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           )}

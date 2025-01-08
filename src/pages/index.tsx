@@ -6,9 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
-    <main
-      className={cn("flex flex-col items-center", inter.className)}
-    >
+    <main className={cn("flex flex-col items-center", inter.className)}>
       <div
         className={cn(
           "area relative flex flex-col items-center justify-center h-screen"
@@ -26,23 +24,28 @@ export default function Home() {
           <li></li>
           <li></li>
         </ul>
-        <div className={cn("relative flex flex-col items-center bg-white md:p-32 rounded-xl p-16")}>
+        <div
+          className={cn(
+            "relative flex flex-col items-center bg-white rounded-xl md:py-16 md:w-1/4 w-3/4 py-6"
+          )}
+        >
           <h1
             className={cn(
               "font-bold text-3xl main-color",
-              "text-transparent bg-clip-text"
+              "text-transparent bg-clip-text pb-4"
             )}
           >
             NextJs forms
           </h1>
+          <p className="inline-block bg-clip-text md:w-1/3 text-center">This platform allows you to publish forms and share them with others.</p>
           <Link
             href="/forms"
             className={cn(
-              "group rounded-lg border border-transparent px-4 py-2",
-              "transition-color mt-16"
+              "group rounded-lg border border-transparent px-4",
+              "transition-color pt-8"
             )}
           >
-            <h2 className={cn("mb-3 text-2xl font-semibold")}>
+            <h2 className={cn("text-2xl font-semibold")}>
               Get Started{" "}
               <span
                 className={cn(
